@@ -1,0 +1,8 @@
+#overrides a:hover{
+	background-color: #2D7FCC;
+    /*color: #2D7FCC;*/
+	transition: all 0.3s ease-in-out;  
+}
+#overrides a{
+
+}
