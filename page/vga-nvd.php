@@ -102,7 +102,7 @@ include_once '../asset/database.php';
 						<tbody>
 							<tr>
 								<td rowspan="2">
-									<div class="card" style="width: 25rem; margin-right: -70px">
+									<div class="card" style="width: 25rem; margin-right:">
 										<div class="card-body">
 											<h5 class="card-title"><?= $eksearch['nama']; ?></h5>
 										</div>
