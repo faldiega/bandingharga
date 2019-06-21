@@ -1,3 +1,7 @@
+<?php
+include_once '../asset/database.php';
+// require '../scrape/ramscrape.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,10 +11,123 @@
 	<link rel="stylesheet" href="../css/bootstrap.css">
 </head>
 <body>
-	<!-- NAVBAR -->
-	<?php require '../asset/navbar.php' ?>
-	<h1>HALAMAN RAM</h1>
+<!-- NAVBAR -->
+<?php require '../asset/navbar.php' ?>
 
+<!-- BOX PENCARIAN -->
+<div class="container">
+	<div class="mt-3">
+		<center><h3>Membandingkan harga RAM</h3></center>
+	</div>
+
+	<form action="" method="post">
+		<div class="mt-4">
+			<div class="input-group mb-3">
+				<div class="input-group-prepend">
+					<span class="input-group-text" id="search-input">Nama Barang</span>
+				</div>
+				<input type="text" name="search-input" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+			</div>
+		</div>
+
+		<select name="jenis" class="custom-select mb-3" style="width: 125px">
+			<option selected disabled>Jenis</option>
+			<option value="DDR2">DDR2</option>
+			<option value="DDR3">DDR3</option>
+			<option value="DDR4">DDR4</option>
+		</select>
+
+		<!-- <select name="tipegtx" class="custom-select mb-3" style="width: 125px">
+			<option selected disabled>Speed</option>
+			<option value=""></option>
+			<option value=""></option>
+			<option value=""></option>
+			<option value=""></option>
+		</select> -->
+		
+		<select name="ukuran" class="custom-select mb-3" style="width: 125px">
+			<option style="display: none">Ukuran</option>
+			<option value="2GB">2 GB</option>
+			<option value="4GB">4 GB</option>
+			<option value="8GB">8 GB</option>
+			<option value="16GB">16 GB</option>
+			<option value="32GB">32 GB</option>
+		</select>	
+		
+		<!-- TOMBOL -->
+		<div class="mt-2, mb-5">
+			<center><button type="submit" name="search-button" id="search-button" style="width: 175px" class="btn btn-primary btn-lg btn-block">Cari Barang</button></center>
+		</div>
+	</form>
+
+	<?php 			
+	// tombol cari barang ditekan
+	if (isset($_POST["search-button"])) {
+		$search = $_POST['search-input'];
+		$jenis = $_POST['jenis'];
+		$ukuran = $_POST['ukuran'];
+		
+		$result2 = mysqli_query($koneksi,"SELECT * FROM ram_rn WHERE nama LIKE '%$search%' AND  nama LIKE '%$jenis%' AND nama LIKE '%$ukuran%'");
+		$result = mysqli_query($koneksi,"SELECT * FROM ram_ek WHERE nama LIKE '%$search%' AND  nama LIKE '%$jenis%' AND nama LIKE '%$ukuran%'");
+
+		/*$result2 = mysqli_query($koneksi,"SELECT * FROM vga_rn WHERE (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') AND (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') AND (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') ");
+		$result = mysqli_query($koneksi,"SELECT * FROM vga_ek WHERE (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') AND (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') AND (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') ");*/
+
+		if (!$result && !$result2) {
+			printf("Error: %s\n", mysqli_error($koneksi));
+			exit();
+		}
+		?>
+
+		<!-- TABEL HASIL PENCARIAN -->
+		<?php while($rnsearch = mysqli_fetch_array($result2) AND $eksearch = mysqli_fetch_array($result)) : ?> 
+		<div class="mt-2">
+			<div class="table-responsive">
+				<table class="table table-bordered">
+					<thead class="thead-dark">
+						<tr>
+							<th>Nama Barang</th>
+							<th scope="col">Nama Toko</th>
+							<th scope="col">Harga</th>
+							<th scope="col">Link</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td rowspan="2">
+								<div class="card" style="width: 25rem; margin-right:">
+									<div class="card-body">
+										<h5 class="card-title"><?= $eksearch['nama']; ?></h5>
+									</div>
+								</div>
+							</td>
+							<td><?= $eksearch['toko']; ?></td>
+							<td>Rp <?php echo number_format($eksearch["harga"],0,".","."); ?>,-</td>
+							<!-- <td> Rp  //$eksearch['harga']; </td> -->
+							<td><a href="<?= $eksearch['link']; ?>" target="_blank">Beli disini</a></td>
+						</tr>
+						<tr>
+							<td><?= $rnsearch['toko']; ?></td>
+							<td>Rp <?= $rnsearch['harga']; ?></td>
+							<td><a href="<?= $rnsearch['link']; ?>" target="_blank">Beli disini</a></td>
+						</tr>							
+						<!-- <tr>
+							<td>Dummy</td>
+							<td>Rp 99.999.999</td>
+							<td><a href="">Beli disini</a></td>
+						</tr> -->
+						
+					</tbody>
+				</table>		
+			</div>
+		</div>
+	<?php endwhile; ?>
+<?php } ?>
+
+<?php 
+// database connection close
+mysqli_close($koneksi);
+?>
 
 
 	<!-- JQuery dulu baru Javascript -->
