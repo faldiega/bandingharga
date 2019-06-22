@@ -1,3 +1,8 @@
+
+<?php
+include_once '../asset/database.php';
+// require '../scrape/procscrape.php';
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,20 +14,127 @@
 <body>
 	<!-- NAVBAR -->
 	<?php require '../asset/navbar.php' ?>
-	<h1>HALAMAN Processor</h1>
-	
 
+	<!-- BOX PENCARIAN -->
+	<div class="container">
+		<div class="mt-3">
+			<center><h3>Membandingkan harga Processor</h3></center>
+		</div>
 
-	<!-- JQuery dulu baru Javascript -->
-	<script
-	src="https://code.jquery.com/jquery-3.4.0.js"
-	integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo="
-	crossorigin="anonymous"></script>
+		<form action="" method="post">
+			<div class="mt-4">
+				<div class="input-group mb-3">
+					<div class="input-group-prepend">
+						<span class="input-group-text" id="search-input">Nama Barang</span>
+					</div>
+					<input type="text" name="search-input" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+				</div>
+			</div>
 
-	<script src="js/mystyle.js"></script>	
+			<select name="brand" class="custom-select mb-3" style="width: 125px">
+				<option selected disabled>Brand</option>
+				<option value="AMD">AMD</option>
+				<option value="Intel">Intel</option>
+			</select>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+			<select name="socket" class="custom-select mb-3" style="width: 125px">
+				<option selected disabled>Socket</option>
+				<option value="LGA 1155">LGA 1155</option>
+				<option value="LGA 1150">LGA 1150</option>
+				<option value="LGA 1151">LGA 1151</option>
+			</select>
 
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+			<!-- <select name="ukuran" class="custom-select mb-3" style="width: 125px">
+				<option style="display: none">Ukuran</option>
+				<option value="2GB">2 GB</option>
+				<option value="4GB">4 GB</option>
+				<option value="8GB">8 GB</option>
+				<option value="16GB">16 GB</option>
+				<option value="32GB">32 GB</option>
+			</select>	 -->
+
+			<!-- TOMBOL -->
+			<div class="mt-2, mb-5">
+				<center><button type="submit" name="search-button" id="search-button" style="width: 175px" class="btn btn-primary btn-lg btn-block">Cari Barang</button></center>
+			</div>
+		</form>
+
+		<?php 			
+	// tombol cari barang ditekan
+		if (isset($_POST["search-button"])) {
+			$search = $_POST['search-input'];
+			$jenis = $_POST['jenis'];
+			$ukuran = $_POST['ukuran'];
+
+			$result2 = mysqli_query($koneksi,"SELECT * FROM ram_rn WHERE nama LIKE '%$search%' AND  nama LIKE '%$jenis%' AND nama LIKE '%$ukuran%'");
+			$result = mysqli_query($koneksi,"SELECT * FROM ram_ek WHERE nama LIKE '%$search%' AND  nama LIKE '%$jenis%' AND nama LIKE '%$ukuran%'");
+
+			if (!$result && !$result2) {
+				printf("Error: %s\n", mysqli_error($koneksi));
+				exit();
+			}
+			?>
+
+			<!-- TABEL HASIL PENCARIAN -->
+			<?php while($rnsearch = mysqli_fetch_array($result2) AND $eksearch = mysqli_fetch_array($result)) : ?> 
+			<div class="mt-2">
+				<div class="table-responsive">
+					<table class="table table-bordered">
+						<thead class="thead-dark">
+							<tr>
+								<th>Nama Barang</th>
+								<th scope="col">Nama Toko</th>
+								<th scope="col">Harga</th>
+								<th scope="col">Link</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td rowspan="2">
+									<div class="card" style="width: 25rem; margin-right:">
+										<div class="card-body">
+											<h5 class="card-title"><?= $eksearch['nama']; ?></h5>
+										</div>
+									</div>
+								</td>
+								<td><?= $eksearch['toko']; ?></td>
+								<td>Rp <?php echo number_format($eksearch["harga"],0,".","."); ?>,-</td>
+								<!-- <td> Rp  //$eksearch['harga']; </td> -->
+								<td><a href="<?= $eksearch['link']; ?>" target="_blank">Beli disini</a></td>
+							</tr>
+							<tr>
+								<td><?= $rnsearch['toko']; ?></td>
+								<td>Rp <?= $rnsearch['harga']; ?></td>
+								<td><a href="<?= $rnsearch['link']; ?>" target="_blank">Beli disini</a></td>
+							</tr>							
+						<!-- <tr>
+							<td>Dummy</td>
+							<td>Rp 99.999.999</td>
+							<td><a href="">Beli disini</a></td>
+						</tr> -->
+						
+					</tbody>
+				</table>		
+			</div>
+		</div>
+	<?php endwhile; ?>
+<?php } ?>
+
+<?php 
+// database connection close
+mysqli_close($koneksi);
+?>	
+
+<!-- JQuery dulu baru Javascript -->
+<script
+src="https://code.jquery.com/jquery-3.4.0.js"
+integrity="sha256-DYZMCC8HTC+QDr5QNaIcfR7VSPtcISykd+6eSmBW5qo="
+crossorigin="anonymous"></script>
+
+<script src="js/mystyle.js"></script>	
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 </body>
 </html>
