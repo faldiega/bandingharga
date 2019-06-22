@@ -70,9 +70,6 @@ include_once '../asset/database.php';
 		$result2 = mysqli_query($koneksi,"SELECT * FROM ram_rn WHERE nama LIKE '%$search%' AND  nama LIKE '%$jenis%' AND nama LIKE '%$ukuran%'");
 		$result = mysqli_query($koneksi,"SELECT * FROM ram_ek WHERE nama LIKE '%$search%' AND  nama LIKE '%$jenis%' AND nama LIKE '%$ukuran%'");
 
-		/*$result2 = mysqli_query($koneksi,"SELECT * FROM vga_rn WHERE (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') AND (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') AND (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') ");
-		$result = mysqli_query($koneksi,"SELECT * FROM vga_ek WHERE (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') AND (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') AND (nama LIKE '%$search%' OR nama LIKE '%$selectVram%' OR nama LIKE '%$search%') ");*/
-
 		if (!$result && !$result2) {
 			printf("Error: %s\n", mysqli_error($koneksi));
 			exit();
